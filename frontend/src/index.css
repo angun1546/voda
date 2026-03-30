@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-base: #0e0e13;
+  --color-surface: #18181b;
+  --color-card: #25252d;
+  --color-purple: #a78bfa;
+  --color-purple-dark: #2e1065;
+  --color-text-primary: #fafafa;
+  --color-text-muted: #a1a1aa;
+  --color-text-subtle: #71717a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0e0e13;
+  color: #fafafa;
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  margin: 0;
+}
