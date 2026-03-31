@@ -9,6 +9,7 @@ import {
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import MovieCard from '../components/MovieCard'
+import SectionTitle from '../components/SectionTitle'
 
 // 더미 데이터 (TMDB 연동 전)
 const ACTOR = {
@@ -151,19 +152,11 @@ const PersonProfilePage = () => {
         <div className='absolute top-0 left-[100px] w-[576px] h-[576px] rounded-full bg-[#bda1ff]/8 blur-[150px] pointer-events-none' />
 
         <div className='max-w-[1664px] mx-auto px-12'>
-          {/* 섹션 헤더 */}
-          <div className='flex items-center justify-between mb-8'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <div>
-                <h2 className='text-[#fafafa] text-2xl font-bold'>출연 영화</h2>
-                <p className='text-[#a1a1aa] text-sm mt-1'>매주 찾아오는 큐레이터의 무료 영화 선물</p>
-              </div>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기 <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="출연 영화" 
+            subtitle="매주 찾아오는 큐레이터의 무료 영화 선물" 
+            link="/people/category"
+          />
 
           {/* 스크롤 카드 열 */}
           <div className='flex gap-6 overflow-x-auto pb-4 scrollbar-hide'>
@@ -186,18 +179,11 @@ const PersonProfilePage = () => {
         <div className='absolute top-0 right-[100px] w-[576px] h-[576px] rounded-full bg-[#bda1ff]/6 blur-[150px] pointer-events-none' />
 
         <div className='max-w-[1664px] mx-auto px-12'>
-          <div className='flex items-center justify-between mb-8'>
-            <div className='flex items-center gap-3'>
-              <div className='w-[12px] h-[48px] bg-[#a78bfa] rounded-sm' />
-              <div>
-                <h2 className='text-[#fafafa] text-2xl font-bold'>출연 드라마</h2>
-                <p className='text-[#a1a1aa] text-sm mt-1'>매주 찾아오는 큐레이터의 무료 영화 선물</p>
-              </div>
-            </div>
-            <Link to='/people/category' className='flex items-center gap-1 text-[#a78bfa] text-sm hover:text-[#c4b5fd] transition-colors'>
-              전체보기 <FontAwesomeIcon icon={faChevronRight} className='text-xs' />
-            </Link>
-          </div>
+          <SectionTitle 
+            title="출연 드라마" 
+            subtitle="매주 찾아오는 큐레이터의 무료 영화 선물" 
+            link="/people/category"
+          />
 
           <div className='flex gap-6 overflow-x-auto pb-4 scrollbar-hide'>
             {DRAMAS.map((ep) => (
@@ -217,7 +203,7 @@ const PersonProfilePage = () => {
               {/* 배경 블롭 */}
               <div className='absolute bottom-0 right-0 w-[384px] h-[384px] rounded-full bg-[#bda1ff]/15 blur-[100px] pointer-events-none' />
 
-              <h2 className='text-white text-2xl font-bold relative z-10'>주요 수상 내역</h2>
+              <SectionTitle title="주요 수상 내역" className="mb-0" />
 
               <div className='flex flex-col gap-0 relative z-10'>
                 {AWARDS.map((item, i) => (
@@ -240,7 +226,7 @@ const PersonProfilePage = () => {
             {/* 함께 작업한 인물 */}
             <div className='w-[544px] flex-shrink-0 bg-[#1f1f26] rounded-xl p-10 flex flex-col justify-between'>
               <div className='flex flex-col gap-6'>
-                <h2 className='text-white text-2xl font-bold'>함께 작업한 인물</h2>
+                <SectionTitle title="함께 작업한 인물" className="mb-0" />
 
                 {/* 협업자 그리드 */}
                 <div className='grid grid-cols-2 gap-6'>
