@@ -21,6 +21,27 @@
 | 6 | `tailwind.config.js` 생성 | Tailwind v4는 `@theme` 블록 사용 |
 | 7 | 다른 팀원 담당 파일 직접 수정 | 충돌 방지. 반드시 먼저 공유 |
 | 8 | 디버깅 중 AI가 제안하는 패키지 설치 | 에러 원인은 패키지가 아니라 코드 |
+| 9 | `BrowserRouter` / `Routes` / `Route` import | Declarative Mode 금지. Data Mode만 허용 |
+| 10 | `loader` / `action` 함수 작성 | Data Mode 고급 기능 미사용. `useFetch`로 대체 |
+| 11 | Tailwind 임의값(arbitrary value) `[px값]` 사용 | 표준 유틸리티 클래스로 대체. 예: `max-w-[1920px]` → `max-w-screen-2xl` |
+
+### React Router v7 Data Mode 전용
+
+이 프로젝트의 라우터 패턴은 **단 하나**다. 아래 패턴 외 다른 방식은 전부 금지다.
+
+```jsx
+// ✅ 유일한 허용 패턴 (App.jsx)
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router'
+const router = createBrowserRouter([{ element: <Layout />, children: [...] }])
+export default function App() { return <RouterProvider router={router} /> }
+
+// ❌ 금지
+import { BrowserRouter, Routes, Route } from 'react-router'  // 절대 금지
+export async function loader() { ... }                        // 절대 금지
+export async function action() { ... }                        // 절대 금지
+```
+
+**데이터 로딩은 반드시 `useFetch` 훅으로 한다. `loader`는 절대 쓰지 않는다.**
 
 ### 왜 이렇게 엄격한가
 
@@ -88,7 +109,7 @@
 | 패키지 | 용도 |
 |--------|------|
 | react, react-dom | UI 프레임워크 |
-| react-router-dom | 클라이언트 라우팅 |
+| react-router | 클라이언트 라우팅 |
 | axios | HTTP 클라이언트 |
 | @fortawesome/* | 아이콘 |
 | tailwind-merge | 조건부 클래스 병합 |

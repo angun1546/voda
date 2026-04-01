@@ -77,3 +77,4 @@ frontend/
 
 프로덕션 애플리케이션 개발 시 TypeScript와 타입 기반 린트 규칙 사용을 권장합니다.
 TypeScript 통합 방법은 [TS 템플릿](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts)과 [`typescript-eslint`](https://typescript-eslint.io) 문서를 참고하세요.
+
