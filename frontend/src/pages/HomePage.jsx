@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import SectionTitle from '../components/SectionTitle'
 import MovieCard from '../components/MovieCard'
 import { EP } from '../api/tmdb'
+import ChatBtn from '../components/ChatBtn'
 
 const toMovieProps = (movie, badgeText) => ({
   id: movie.id,
@@ -111,6 +112,7 @@ const HomePage = () => {
         </section>
 
       </div>
+      <ChatBtn />
     </div>
   )
 }
