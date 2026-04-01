@@ -1,0 +1,35 @@
+import ax from './axios'
+
+const IMG = 'https://image.tmdb.org/t/p'
+
+export const EP = {
+  // 이미지 URL 헬퍼
+  img: (path, w = 'w500') => path ? `${IMG}/${w}${path}` : null,
+  bg: (path) => path ? `${IMG}/original${path}` : null,
+
+  // 인기/트렌딩
+  popular: (type) => ax.get(`/${type}/popular`),
+  nowPlaying: (type) => ax.get(`/${type}/now_playing`),
+  trending: (type, window = 'week') => ax.get(`/trending/${type}/${window}`),
+  topRated: (type) => ax.get(`/${type}/top_rated`),
+
+  // 상세
+  detail: (type, id) => ax.get(`/${type}/${id}`, {
+    params: { append_to_response: 'credits,reviews,videos,similar' }
+  }),
+
+  // 검색/필터
+  search: (q) => ax.get('/search/multi', { params: { query: q } }),
+  discover: (type, params) => ax.get(`/discover/${type}`, { params }),
+  genres: (type) => ax.get(`/genre/${type}/list`),
+
+  // 인물
+  person: (id) => ax.get(`/person/${id}`, {
+    params: { append_to_response: 'combined_credits' }
+  }),
+  personPopular: () => ax.get('/person/popular'),
+  personTrending: (window = 'day') => ax.get(`/trending/person/${window}`),
+
+  // TV 시즌
+  season: (id, num) => ax.get(`/tv/${id}/season/${num}`),
+}

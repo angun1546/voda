@@ -141,17 +141,27 @@ src/components/Feed.jsx를 만들어줘.
 
 ```
 CLAUDE.md를 읽어줘.
-src/components/Layout.jsx와 src/App.jsx를 수정해줘.
+아래 3개 파일을 작성해줘.
 
-Layout.jsx:
-- GNB + <Outlet /> + Footer + ChatBtn 감싸기
+1. src/router/index.jsx (신규 생성)
+   - createBrowserRouter로 라우트 목록만 관리
+   - Layout을 ../App에서 import
+   - 라우트 목록: /, /movie, /tv, /person, /person/:id,
+     /person/category, /find, /ask, /movie/:id, /tv/:id, /profile
+   - export default router
 
-App.jsx:
-- BrowserRouter > Routes > Route path="/" element={<Layout>}
-- 중첩 라우트로 모든 페이지 배치
-- 라우트 목록: /, /movie, /tv, /person, /person/:id,
-  /person/category, /find, /ask, /movie/:id, /tv/:id, /profile
-- 새 패키지 설치하지 마
+2. src/App.jsx (Layout 전용으로 교체)
+   - Outlet + GNB + Footer만 렌더
+   - RouterProvider / createBrowserRouter 포함 금지
+   - export default Layout
+
+3. src/main.jsx (RouterProvider 렌더)
+   - ./router에서 router import
+   - RouterProvider로 감싸서 렌더
+
+BrowserRouter / Routes / Route 절대 사용 금지
+loader / action 사용 금지
+새 패키지 설치하지 마
 ```
 
 ---

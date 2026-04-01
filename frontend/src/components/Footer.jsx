@@ -1,7 +1,11 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFacebook, faInstagram, faTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'
+const SOCIAL = [
+  { label: 'Facebook', text: 'f' },
+  { label: 'Instagram', text: 'in' },
+  { label: 'X', text: 'X' },
+  { label: 'YouTube', text: '▶' },
+]
 
-export const Footer = () => {
+const Footer = () => {
   const footerLinks = [
     '자막 및 음성', '음성 지원', '고객 센터', '기프트카드',
     '미디어 센터', '투자 정보(IR)', '입사 정보', '이용 약관',
@@ -13,10 +17,11 @@ export const Footer = () => {
       <div className='max-w-[1664px] mx-auto'>
         {/* 소셜 미디어 아이콘 */}
         <div className='flex gap-6 mb-10 text-[#fafafa] text-2xl'>
-          <a href='#' className='hover:text-white transition-colors' aria-label="Facebook"><FontAwesomeIcon icon={faFacebook} /></a>
-          <a href='#' className='hover:text-white transition-colors' aria-label="Instagram"><FontAwesomeIcon icon={faInstagram} /></a>
-          <a href='#' className='hover:text-white transition-colors' aria-label="Twitter"><FontAwesomeIcon icon={faTwitter} /></a>
-          <a href='#' className='hover:text-white transition-colors' aria-label="YouTube"><FontAwesomeIcon icon={faYoutube} /></a>
+          {SOCIAL.map(({ label, text }) => (
+            <a key={label} href='#' className='hover:text-white transition-colors w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-sm font-bold' aria-label={label}>
+              {text}
+            </a>
+          ))}
         </div>
 
         {/* 푸터 링크 그리드 */}

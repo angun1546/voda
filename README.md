@@ -1,97 +1,80 @@
-# VODA — 풀사이클 생성형 AI OTT 미디어 서비스
+# React + Vite 풀사이클 스타터 (프론트엔드)
 
-인기 영화·TV 시리즈 큐레이션 OTT 서비스
-
----
-
-## 프로젝트 개요
-
-| 항목 | 내용 |
-|------|------|
-| **기간** | 2026.03.24(화) ~ 2026.04.03(금) · 주말 제외 총 9일 |
-| **팀 구성** | A·B: 디자인 리드 / C: 프론트엔드 리드 / D: 백엔드·AI 리드 |
-| **코딩 방식** | Gemini CLI 바이브 코딩 |
-
-### 수행 단계
-
-```
-기획 (2일) → 디자인 (3일) → 구현 (3일) → 검토·배포 (1일)
-```
-
-### 핵심 워크플로우
-
-```
-Google Stitch → Figma → Gemini CLI → Render
-```
-
----
+React 19와 Vite 7을 기반으로 한 프론트엔드 스타터 템플릿입니다. HMR(Hot Module Replacement)과 ESLint가 기본 설정되어 있습니다.
 
 ## 기술 스택
 
-### 프론트엔드
+- **React** 19
+- **Vite** 7
+- **React Compiler** (babel-plugin-react-compiler)
+- **ESLint** 9
 
-| 기술 | 버전 |
-|------|------|
-| React | 19 |
-| Tailwind CSS | v4 |
-| React Router | v7 |
-| react-player | latest |
-| Axios | latest |
-| FontAwesome | latest |
-| tailwind-merge | latest |
+## 시작하기
 
-### 백엔드
+### 의존성 설치
 
-| 기술 | 버전 |
-|------|------|
-| Python FastAPI | latest |
-| TMDB API | v3 |
+```bash
+npm install
+```
+### 의존성 오류 발생시
 
----
+```bash
+npm install --legacy-peer-deps
+```
+
+### 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+브라우저에서 `http://localhost:5173`으로 접속하세요.
+
+### 빌드
+
+```bash
+npm run build
+```
+
+### 빌드 결과물 미리보기
+
+```bash
+npm run preview
+```
+
+### 린트 검사
+
+```bash
+npm run lint
+```
 
 ## 프로젝트 구조
 
 ```
-voda/
-├── frontend/
-│   └── src/
-│       ├── components/
-│       ├── pages/
-│       ├── hooks/
-│       ├── services/
-│       └── utils/
-├── backend/
-│   └── app/
-│       ├── routers/
-│       ├── services/
-│       └── models/
-└── CLAUDE.md
+frontend/
+├── src/
+│   ├── App.jsx       # 루트 컴포넌트
+│   └── main.jsx      # 진입점
+├── index.html
+├── vite.config.js    # Vite 설정
+├── eslint.config.js  # ESLint 설정
+└── package.json
 ```
 
----
+## React Compiler
 
-## 시작하기
+이 프로젝트는 React Compiler가 활성화되어 있습니다. React Compiler는 컴포넌트를 자동으로 최적화하여 불필요한 리렌더링을 방지합니다.
 
-### 프론트엔드
+> 참고: React Compiler를 사용하면 Vite의 개발 서버 및 빌드 성능에 영향을 줄 수 있습니다.
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+자세한 내용은 [React Compiler 공식 문서](https://react.dev/learn/react-compiler)를 참고하세요.
 
-`.env` 파일에 TMDB API 키를 설정하세요:
+## Vite 플러그인
 
-```
-VITE_TMDB_API_KEY=your_api_key_here
-```
+- **@vitejs/plugin-react**: Babel을 사용한 Fast Refresh 지원
 
-### 백엔드
+## ESLint 설정 확장
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+프로덕션 애플리케이션 개발 시 TypeScript와 타입 기반 린트 규칙 사용을 권장합니다.
+TypeScript 통합 방법은 [TS 템플릿](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts)과 [`typescript-eslint`](https://typescript-eslint.io) 문서를 참고하세요.
 
----

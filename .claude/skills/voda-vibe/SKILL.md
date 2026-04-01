@@ -22,34 +22,111 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 
 팀원에게 설명할 때 이 비유를 사용한다:
 
-| 개념 | 비유 |
-|------|------|
-| npm install | 앱스토어에서 앱 설치. 이미 설치된 앱으로만 작업한다 |
-| API 호출 | 식당 주문. 메뉴(endpoint)에 있는 것만 주문 가능 |
-| 모노레포 | 같은 건물 다른 층. frontend는 2층, backend는 3층. 1층(루트)에서 npm 치면 엉뚱한 층에 설치됨 |
-| 컴포넌트 | 레고 블록. Card는 작은 블록, Feed는 큰 블록, 페이지는 블록을 쌓은 결과 |
-| props | 주문서. 같은 레고 블록이어도 주문서(props)에 따라 색이 다르다 |
+| 개념        | 비유                                                                                        |
+| ----------- | ------------------------------------------------------------------------------------------- |
+| npm install | 앱스토어에서 앱 설치. 이미 설치된 앱으로만 작업한다                                         |
+| API 호출    | 식당 주문. 메뉴(endpoint)에 있는 것만 주문 가능                                             |
+| 모노레포    | 같은 건물 다른 층. frontend는 2층, backend는 3층. 1층(루트)에서 npm 치면 엉뚱한 층에 설치됨 |
+| 컴포넌트    | 레고 블록. Card는 작은 블록, Feed는 큰 블록, 페이지는 블록을 쌓은 결과                      |
+| props       | 주문서. 같은 레고 블록이어도 주문서(props)에 따라 색이 다르다                               |
 
 ## 스택 고정
 
-| 기술 | 버전 | 비고 |
-|------|------|------|
-| React | 19 | |
-| Vite | 7 | |
-| Tailwind CSS | v4 | `@import "tailwindcss"` + `@theme` 블록. tailwind.config.js 없음 |
-| React Router | v7 | |
-| Axios | latest | `src/api/axios.js` 인스턴스 |
-| FontAwesome | latest | 아이콘 |
-| tailwind-merge | latest | 조건부 클래스 |
-| FastAPI | latest | 백엔드 |
+| 기술           | 버전   | 비고                                                             |
+| -------------- | ------ | ---------------------------------------------------------------- |
+| React          | 19     |                                                                  |
+| Vite           | 7      |                                                                  |
+| Tailwind CSS   | v4     | `@import "tailwindcss"` + `@theme` 블록. tailwind.config.js 없음 |
+| React Router   | v7     | **Data Mode 전용** — `createBrowserRouter` + `RouterProvider` + `Outlet` |
+| Axios          | latest | `src/api/axios.js` 인스턴스                                      |
+| FontAwesome    | latest | 아이콘                                                           |
+| tailwind-merge | latest | 조건부 클래스                                                    |
+| FastAPI        | latest | 백엔드                                                           |
 
 **허용 목록 외 패키지 설치 절대 금지.**
+
+---
+
+## ⛔ React Router v7 Data Mode 강제 규칙
+
+**이 프로젝트는 React Router v7 Data Mode만 사용한다. 예외 없음.**
+
+### ✅ 유일한 올바른 패턴 (3파일 구조)
+
+```jsx
+// src/router/index.jsx — 라우트 목록만
+import { createBrowserRouter } from 'react-router'
+import Layout from '../App'
+import HomePage from '../pages/HomePage'
+// ... 페이지 import
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/movie', element: <MoviePage /> },
+      // ...
+    ],
+  },
+])
+
+export default router
+```
+
+```jsx
+// src/App.jsx — 공통 레이아웃만
+import { Outlet } from 'react-router'
+import GNB from './components/GNB'
+import Footer from './components/Footer'
+
+const Layout = () => (
+  <div className='min-h-screen flex flex-col bg-[#0e0e13]'>
+    <GNB />
+    <main className='flex-1'><Outlet /></main>
+    <Footer />
+  </div>
+)
+
+export default Layout
+```
+
+```jsx
+// src/main.jsx — 앱 진입점
+import { RouterProvider } from 'react-router'
+import router from './router'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>,
+)
+```
+
+### ❌ 절대 금지
+
+```jsx
+// ❌ Declarative Mode — 이 import 자체가 금지
+import { BrowserRouter, Routes, Route } from 'react-router'
+
+// ❌ action/loader — 사용 금지
+export async function loader() { ... }
+export async function action() { ... }
+```
+
+| 금지 항목 | 이유 |
+|----------|------|
+| `BrowserRouter` | Declarative Mode (구 v6 방식) |
+| `Routes` + `Route` | Declarative Mode |
+| `loader` / `action` | Data Mode 고급 기능, 이 프로젝트에서 불필요 |
+
+**데이터 로딩은 반드시 `useFetch` 훅 + `useEffect`로 처리한다.**
 
 ## 작업 유형별 흐름
 
 ### 1. 컴포넌트 생성
 
-→ `references/components.md` 읽기
+→ `components.md` 읽기
 
 1. Figma 컴포넌트명 확인
 2. React 컴포넌트 매핑 표에서 대응 찾기
@@ -59,7 +136,7 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 
 ### 2. TMDB API 연동
 
-→ `references/tmdb-api.md` 읽기
+→ `tmdb-api.md` 읽기
 
 1. `src/api/tmdb.js`의 EP 객체에서 필요한 함수 확인
 2. `useFetch` 훅으로 데이터 로딩
@@ -68,7 +145,7 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 
 ### 3. 페이지 조립
 
-→ `references/components.md`에서 페이지 구성 패턴 확인
+→ `components.md`에서 페이지 구성 패턴 확인
 
 1. 해당 페이지의 Figma 구조 확인 (Hero + Feed 스태킹)
 2. 필요한 컴포넌트 import
@@ -77,21 +154,23 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 
 ### 4. 에러 수정
 
-→ `references/rules.md` 읽기
+→ `rules.md` 읽기
 
 **반드시 먼저 분류한다:**
+
 - 코드 에러 (오타, import, props) → 해당 파일만 수정
 - 환경 에러 (node_modules, .env, 경로) → 터미널 명령으로 해결
 - API 에러 (네트워크, 키, 응답) → console.log로 응답 먼저 확인
 
 **절대 하지 않는 것:**
+
 - 새 패키지 설치
 - 기존 패키지 버전 변경
 - 다른 라이브러리로 교체
 
 ### 5. 프롬프트 사용
 
-→ `references/prompts.md` 읽기
+→ `prompts.md` 읽기
 
 팀원 역할(A/B/C)에 맞는 프롬프트 템플릿을 선택하고, `[변수]`만 실제 값으로 교체한다.
 
@@ -101,6 +180,7 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 - 식별자 짧게: `res`, `uid`, `idx`, `img`
 - 인라인 스타일 `style={{}}` 금지
 - 장식적 CSS 금지 (그라데이션은 Figma 시안에 있는 것만)
+- **Tailwind 임의값(arbitrary value) `[px값]` 하드코딩 금지** — 반드시 표준 유틸리티 클래스 사용. 예: `max-w-[1920px]` → `max-w-screen-2xl`. 일치하는 클래스가 없을 때만 `@theme` 토큰으로 정의
 - 커밋 접두어: `feat` / `fix` / `docs` 3개만
 - 한국어 주석, 한국어 응답
 
@@ -108,20 +188,22 @@ description: "VODA OTT 프로젝트 바이브 코딩 스킬. 팀원이 Gemini CL
 
 ```
 frontend/src/
-├── api/          tmdb.js, axios.js
+├── api/          axios.js, tmdb.js
 ├── hooks/        useFetch.js
-├── components/   공용 컴포넌트 25개
-├── pages/        페이지 컴포넌트 9개
-├── App.jsx       라우팅
-├── main.jsx
-└── index.css     @theme 토큰
+├── components/   공용 컴포넌트
+├── pages/        페이지 컴포넌트
+├── router/
+│   └── index.jsx  라우트 설정 (createBrowserRouter)
+├── App.jsx        공통 레이아웃 (GNB + Outlet + Footer)
+├── main.jsx       앱 진입점 (RouterProvider 렌더)
+└── index.css      @theme 토큰
 ```
 
 ## 참조 파일 안내
 
-| 파일 | 언제 읽는가 |
-|------|------------|
-| `references/components.md` | 컴포넌트 생성, 페이지 조립 시 |
-| `references/tmdb-api.md` | TMDB 데이터 연동 시 |
-| `references/prompts.md` | 팀원이 프롬프트 템플릿 요청 시 |
-| `references/rules.md` | 에러 수정, 의존성 관련 질문 시 |
+| 파일                       | 언제 읽는가                    |
+| -------------------------- | ------------------------------ |
+| `components.md` | 컴포넌트 생성, 페이지 조립 시  |
+| `tmdb-api.md`   | TMDB 데이터 연동 시            |
+| `prompts.md`    | 팀원이 프롬프트 템플릿 요청 시 |
+| `rules.md`      | 에러 수정, 의존성 관련 질문 시 |

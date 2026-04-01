@@ -1,0 +1,24 @@
+import { createBrowserRouter } from 'react-router'
+import Layout from '../App'
+import HomePage from '../pages/HomePage'
+import MoviePage from '../pages/MoviePage'
+import TVPage from '../pages/TVPage'
+import AskPage from '../pages/AskPage'
+import SearchPage from '../pages/SearchPage'
+import ProfilePage from '../pages/ProfilePage'
+
+const router = createBrowserRouter([
+  {
+    element: <Layout />,
+    children: [
+      { path: '/', element: <HomePage /> },
+      { path: '/movie', element: <MoviePage /> },
+      { path: '/tv', element: <TVPage /> },
+      { path: '/ask', element: <AskPage /> },
+      { path: '/search', element: <SearchPage /> },
+      { path: '/profile', element: <ProfilePage /> },
+    ],
+  },
+])
+
+export default router
