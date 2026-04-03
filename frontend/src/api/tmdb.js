@@ -24,6 +24,9 @@ export const EP = {
   discover: (type, params) => ax.get(`/discover/${type}`, { params }),
   genres: (type) => ax.get(`/genre/${type}/list`),
 
+  // 비디오 (언어별 탐색용)
+  videos: (type, id, lang) => ax.get(`/${type}/${id}/videos`, { params: { language: lang } }),
+
   // 인물
   person: (id) => ax.get(`/person/${id}`, {
     params: { append_to_response: 'combined_credits' }
@@ -33,4 +36,19 @@ export const EP = {
 
   // TV 시즌
   season: (id, num) => ax.get(`/tv/${id}/season/${num}`),
+
+  // 전체보기 페이지용: 카테고리 + 페이지 번호
+  browsePage: (mediaType, category, page = 1, extra = {}) => {
+    if (category === 'discover') {
+      return ax.get(`/discover/${mediaType}`, { params: { ...extra, page } })
+    }
+    return ax.get(`/${mediaType}/${category}`, { params: { ...extra, page } })
+  },
+
+  // 인물 전체보기용
+  browsePerson: (category, page = 1) => {
+    if (category === 'trending_day') return ax.get('/trending/person/day', { params: { page } })
+    if (category === 'trending_week') return ax.get('/trending/person/week', { params: { page } })
+    return ax.get('/person/popular', { params: { page } })
+  },
 }
