@@ -1,4 +1,10 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="8" fill="#1A1A1A"/>
-  <path d="M8 9.5L16 23.5L24 9.5" stroke="#8A4DFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="voda-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A4DFF" />
+      <stop offset="1" stop-color="#4D77FF" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="#111111"/>
+  <path d="M7 8L16 25L25 8" stroke="url(#voda-grad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
