@@ -1,63 +1,82 @@
 import { Outlet, useLocation } from 'react-router'
-import { useEffect } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import GNB from './components/GNB'
 import Footer from './components/Footer'
 import ChatBtn from './components/ChatBtn'
-import ScoreSummary from './components/ScoreSummary';
+import BottomNav from './components/BottomNav'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Lenis from 'lenis'
 
-// 페이지 이동 시 스크롤을 맨 위로 초기화
-const ScrollToTop = () => {
-  const { pathname } = useLocation()
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [pathname])
-  return null
-}
+// GSAP 플러그인 등록
+gsap.registerPlugin(ScrollTrigger)
 
-/**
- * Layout: 전역 레이아웃
- * 화면 전체 너비를 1920px로 제한하고 중앙 정렬합니다.
- */
 const Layout = () => {
-  const { pathname } = useLocation();
+  const { pathname } = useLocation()
+  const mainRef = useRef(null)
+  const lenisRef = useRef(null)
 
-  // ✅ 현재 경로가 '/ask' 인지 확인 (VODA AI 전용 페이지 여부)
-  const isAskPage = pathname === '/ask';
+  // 1. Lenis (Smooth Scroll) 초기화
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      touchMultiplier: 2,
+    })
+
+    lenisRef.current = lenis
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    // GSAP ScrollTrigger와 Lenis 동기화
+    lenis.on('scroll', ScrollTrigger.update)
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000)
+    })
+    gsap.ticker.lagSmoothing(0)
+
+    return () => {
+      lenis.destroy()
+      gsap.ticker.remove(lenis.raf)
+    }
+  }, [])
+
+  // 2. 페이지 전환 애니메이션 (GSAP)
+  useEffect(() => {
+    if (!mainRef.current) return
+
+    // 이전 애니메이션 제거
+    gsap.killTweensOf(mainRef.current)
+
+    // 페이지 진입 효과: 살짝 아래에서 위로 올라오며 페이드인
+    gsap.fromTo(mainRef.current, 
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', clearProps: 'all' }
+    )
+
+    // 페이지 변경 시 최상단으로 부드럽게 이동
+    lenisRef.current?.scrollTo(0, { immediate: true })
+  }, [pathname])
+
+  const isAskPage = pathname === '/ask'
 
   return (
-    <div className='min-h-screen flex flex-col bg-base'>
-      <ScrollToTop />
+    <div className='min-h-screen flex flex-col bg-base overflow-x-hidden'>
       <GNB />
-      <main className='flex-1 w-full max-w-content mx-auto'>
+      <main ref={mainRef} className='flex-1 w-full max-w-content mx-auto outline-none'>
         <Outlet />
       </main>
       <Footer />
-      
-      {/* ✅ AskPage가 아닐 때만 ChatBtn을 렌더링하도록 조건부 처리 */}
       {!isAskPage && <ChatBtn />}
+      <BottomNav />
     </div>
   )
 }
-
-const TestPage = () => {
-  // TMDB 응답 구조와 유사한 테스트 데이터
-  const dummyReviews = [
-    { author_details: { rating: 9 } },
-    { author_details: { rating: 8 } },
-    { author_details: { rating: 10 } },
-    { author_details: { rating: 4 } },
-    { author_details: { rating: 2 } },
-  ];
-
-  return (
-    <div className="p-20 bg-neutral-950"> {/* 배경색이 있어야 흰색 글자가 보입니다 */}
-      <ScoreSummary 
-        avg={8.4} 
-        count={12402} 
-        reviews={dummyReviews} 
-      />
-    </div>
-  );
-};
 
 export default Layout
