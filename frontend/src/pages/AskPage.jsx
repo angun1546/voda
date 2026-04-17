@@ -15,6 +15,8 @@ const AskPage = () => {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesRef = useRef(null)
+  // 사용자가 직접 스크롤 중이면 자동 스크롤 안 함
+  const userScrolling = useRef(false)
 
   // 언어 변경 시 첫 메시지 갱신 (대화 진행 중이 아닐 때만)
   useEffect(() => {
@@ -23,8 +25,9 @@ const AskPage = () => {
     }
   }, [ui.askGreeting])
 
+  // 새 메시지 추가 시 맨 아래로 (사용자가 스크롤 중이면 생략)
   useEffect(() => {
-    if (messages.length <= 1 && !loading) return
+    if (userScrolling.current) return
     if (messagesRef.current) {
       messagesRef.current.scrollTop = messagesRef.current.scrollHeight
     }
@@ -32,8 +35,10 @@ const AskPage = () => {
 
   const handleSend = async (text) => {
     const trimmed = (typeof text === 'string' ? text : input).trim()
+    // 로딩 중이거나 빈 메시지면 전송 막음 (타이핑은 항상 가능)
     if (!trimmed || loading) return
 
+    userScrolling.current = false
     setMessages((prev) => [...prev, { id: Date.now(), role: 'user', text: trimmed }])
     setInput('')
     setLoading(true)
@@ -58,6 +63,20 @@ const AskPage = () => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend() }
   }
 
+  const handleScroll = () => {
+    const el = messagesRef.current
+    if (!el) return
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40
+    userScrolling.current = !atBottom
+  }
+
+  const handleWheel = (e) => {
+    e.stopPropagation()
+    const el = messagesRef.current
+    if (!el) return
+    el.scrollTop += e.deltaY
+  }
+
   const quickPrompts = [ui.askPrompt1, ui.askPrompt2, ui.askPrompt3, ui.askPrompt4]
 
   return (
@@ -66,7 +85,9 @@ const AskPage = () => {
 
       <div
         ref={messagesRef}
-        className='flex-1 min-h-0 max-w-3xl w-full mx-auto flex flex-col gap-6 pb-10 overflow-y-auto no-scrollbar'
+        onScroll={handleScroll}
+        onWheel={handleWheel}
+        className='flex-1 min-h-0 max-w-3xl w-full mx-auto flex flex-col gap-6 pb-10 overflow-y-scroll no-scrollbar'
       >
         {messages.map((msg) => (
           <ChatBubble key={msg.id} msg={msg.text} isAi={msg.role === 'ai'} />
@@ -97,8 +118,7 @@ const AskPage = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={ui.askPlaceholder}
-            disabled={loading}
-            className='bg-transparent outline-none text-white h-14 w-full placeholder-zinc-500 disabled:opacity-50 font-serif text-lg'
+            className='bg-transparent outline-none text-white h-14 w-full placeholder-zinc-500 font-serif text-lg'
           />
           <button
             onClick={() => handleSend()}
